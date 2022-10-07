@@ -9,6 +9,16 @@
     outline: 1px solid grey;
 }
 
+.grid-item-fire {
+    outline: 1px solid grey;
+    background: rgb(228, 65, 65);
+}
+
+.grid-item-forest {
+    outline: 1px solid grey;
+    background: rgb(35, 158, 35);
+}
+
 .settings {
     display: flex;
     flex-direction: row;
