@@ -3,9 +3,8 @@ import "./Grid.css";
 
 type Props = {
     grid?: Number[];
-    height: number;
-    width: number;
     gridSize: number;
+    pixelSize: number;
 };
 
 const typesOfFields = {
@@ -19,15 +18,15 @@ const Grid = (props: Props) => {
 
     const drawGrid = useCallback(
         (grid?: Number[]) => {
-            if (props.height !== props.grid.length) {
+            if (props.gridSize !== props.grid.length) {
                 alert("mismatch");
             }
             try {
                 let initialRows = [];
-                let singleGridSize = props.gridSize / props.height;
+                let singleGridSize = props.pixelSize / props.gridSize;
                 let index = 0;
-                for (let i = 0; i < props.height; i++) {
-                    for (let j = 0; j < props.width; j++) {
+                for (let i = 0; i < props.gridSize; i++) {
+                    for (let j = 0; j < props.gridSize; j++) {
                         index++;
                         initialRows.push(
                             <div
@@ -51,7 +50,7 @@ const Grid = (props: Props) => {
                 console.error(err);
             }
         },
-        [props.grid.length, props.gridSize, props.height, props.width]
+        [props.grid.length, props.pixelSize, props.gridSize]
     );
 
     const createGrid = useCallback(() => {
@@ -66,7 +65,7 @@ const Grid = (props: Props) => {
         <div>
             <div
                 className="grid"
-                style={{ height: props.gridSize, width: props.gridSize }}
+                style={{ height: props.pixelSize, width: props.pixelSize }}
             >
                 {grid}
             </div>
