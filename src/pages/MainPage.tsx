@@ -10,11 +10,11 @@ type Settings = {
 
 type EventData = {
     grid_size: number;
-    grid: Number[];
+    grid: Array<Number[]>;
 };
 
 const MainPage = () => {
-    const [grid, setGrid] = useState<Number[]>();
+    const [grid, setGrid] = useState<Array<Number[]>>();
     const [gridSize, setGridSize] = useState(20);
     const [pixelSize, setPixelSize] = useState(500);
     const [connection, setConnection] = useState(false);
