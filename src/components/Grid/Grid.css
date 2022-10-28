@@ -7,6 +7,7 @@
 }
 .grid-item {
     outline: 1px solid grey;
+    background: rgb(78, 54, 54);
 }
 
 .grid-item-fire {
@@ -14,9 +15,29 @@
     background: rgb(228, 65, 65);
 }
 
-.grid-item-forest {
+.grid-item-forest-low {
     outline: 1px solid grey;
     background: rgb(35, 158, 35);
+}
+
+.grid-item-forest-medium {
+    outline: 1px solid grey;
+    background: rgb(92, 167, 92);
+}
+
+.grid-item-forest-high {
+    outline: 1px solid grey;
+    background: rgb(4, 109, 4);
+}
+
+.grid-item-forest-water {
+    outline: 1px solid grey;
+    background: rgb(35, 64, 158);
+}
+
+.grid-item-forest-rock {
+    outline: 1px solid grey;
+    background: rgb(49, 53, 49);
 }
 
 .settings {
