@@ -8,9 +8,13 @@ type Props = {
 };
 
 const typesOfFields = {
-  0: "grid-item",
-  1: "grid-item-fire",
-  2: "grid-item-forest",
+  1: "grid-item",
+  2: "grid-item-fire",
+  3: "grid-item-forest-low",
+  4: "grid-item-forest-medium",
+  5: "grid-item-forest-high",
+  6: "grid-item-forest-water",
+  7: "grid-item-forest-rock",
 };
 
 const Grid = (props: Props) => {
