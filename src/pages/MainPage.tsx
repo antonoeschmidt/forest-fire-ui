@@ -1,7 +1,8 @@
 import { Button, TextField } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import Arrow from "../components/Arrow/Arrow";
 import Grid from "../components/Grid/Grid";
-import GridPicker from "../components/Grid_picker/Grid_picker";
+import GridPicker from "../components/GridPicker/GridPicker";
 import { connectWebsocket } from "../utils/webSocket";
 
 type Settings = {
@@ -11,19 +12,18 @@ type Settings = {
 
 export type EventData = {
     grid_size: number;
-    grid: Array<Number[]>;
+    grid: Array<number[]>;
+    wind: Array<number>;
 };
-
-
 
 const MainPage = () => {
     const prevGrids = useRef<EventData[]>([]);
-    const [grid, setGrid] = useState<Array<Number[]>>();
-
+    const [grid, setGrid] = useState<Array<number[]>>();
     const [gridSize, setGridSize] = useState<number>(20);
     const [pixelSize, setPixelSize] = useState<number>(500);
     const [connection, setConnection] = useState(false);
     const [settings, setSettings] = useState<Settings>({ gridSize, pixelSize });
+    const [wind, setWind] = useState<Array<number>>();
     const ws = useRef<WebSocket>();
 
     //TODO the method that opens the websocket connection and runs a new sim needs to set prevGrids.current = []
@@ -41,18 +41,22 @@ const MainPage = () => {
         const prevGrid = prevGrids.current[index];
         setGridSize(prevGrid.grid_size);
         setGrid(prevGrid.grid);
-        setSettings(prev => ({...prev, gridSize: prevGrid.grid_size }))
-    }
+        setSettings((prev) => ({ ...prev, gridSize: prevGrid.grid_size }));
+    };
 
     const createRandomGrid = () => {
         let grid = [];
         for (let i = 0; i < settings.gridSize; i++) {
             grid.push(Array(settings.gridSize));
             for (let j = 0; j < settings.gridSize; j++) {
-                grid[i][j] = Math.round(Math.random() * 2);
+                grid[i][j] = Math.round(Math.random() * 2) + 1;
             }
         }
-        prevGrids.current.push({grid_size: settings.gridSize, grid: grid});
+        prevGrids.current.push({
+            grid_size: settings.gridSize,
+            grid: grid,
+            wind: [0, 0],
+        });
         setGrid(grid);
         setGridSize(settings.gridSize);
         setPixelSize(settings.pixelSize);
@@ -60,9 +64,15 @@ const MainPage = () => {
 
     const onMessage = (event: MessageEvent): void => {
         let data = JSON.parse(event.data) as EventData;
-        prevGrids.current.push({grid_size: data.grid_size, grid: data.grid})
+        prevGrids.current.push({
+            grid_size: data.grid_size,
+            grid: data.grid,
+            wind: data.wind,
+        });
         setGridSize(data.grid_size);
         setGrid(data.grid);
+        setWind(data.wind);
+        console.log(data.wind);
     };
 
     const onOpen = (event: Event): void => {
@@ -85,7 +95,7 @@ const MainPage = () => {
     }, []);
 
     return (
-        <div style={{height: "100vh" }}>
+        <div style={{ height: "100vh", textAlign: "center" }}>
             <h1>Forest Fire Simulation</h1>
             {!connection && (
                 <div className="settings">
@@ -118,13 +128,18 @@ const MainPage = () => {
                     </Button>
                 </div>
             )}
-            <div className="settings">
-                <GridPicker maxIndex={prevGrids.current.length - 2} loadGrid={loadGrid}/>
-            </div>
-            <br />
+           <p style={{fontSize: 20, margin: 0}}>Wind direction</p>
+            <Arrow wind={wind}/>
             {grid && (
                 <Grid grid={grid} gridSize={gridSize} pixelSize={pixelSize} />
             )}
+
+            <div className="settings">
+                <GridPicker
+                    maxIndex={prevGrids.current.length - 2}
+                    loadGrid={loadGrid}
+                />
+            </div>
         </div>
     );
 };

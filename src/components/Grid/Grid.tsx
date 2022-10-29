@@ -21,7 +21,6 @@ const Grid = (props: Props) => {
   let singleGridSize = props.pixelSize / props.gridSize;
 
   return (
-    <div>
       <div
         className="grid"
         style={{ height: props.pixelSize, width: props.pixelSize }}
@@ -39,7 +38,6 @@ const Grid = (props: Props) => {
           ))
         )}
       </div>
-    </div>
   );
 };
 
