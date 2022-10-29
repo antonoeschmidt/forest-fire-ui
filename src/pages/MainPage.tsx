@@ -72,7 +72,6 @@ const MainPage = () => {
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
-        console.log(data.wind);
     };
 
     const onOpen = (event: Event): void => {

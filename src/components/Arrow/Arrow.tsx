@@ -32,7 +32,7 @@ const Arrow = (props: Props) => {
             basisVector.x * windVector.x + basisVector.y * windVector.y;
         const lengthsProduct = basisVector.len() * windVector.len();
         const cos = dotProduct / lengthsProduct;
-        const angle = Math.acos(cos) * (180 / Math.PI);
+        const angle = Math.acos(cos) * (180 / Math.PI); // Converts radians to degrees
 
         setRotation(windVector.x > 0 ? -angle : angle);
     }, [props.wind]);
