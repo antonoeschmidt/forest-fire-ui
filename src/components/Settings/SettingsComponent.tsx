@@ -61,8 +61,8 @@ const SettingsComponent = (props: Props) => {
                 sx={theme}
                 variant="outlined"
                 label="Ignite point"
-                type="text"
-                value={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
+                type="number"
+                // value={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
                 onChange={(e) =>
                     props.setSimulationData({
                         ...props.simulationData,
@@ -75,8 +75,8 @@ const SettingsComponent = (props: Props) => {
                 sx={theme}
                 variant="outlined"
                 label="Wind"
-                type="text"
-                value={`${props.simulationData.wind[0]},${props.simulationData.wind[1]}`}
+                type="number"
+                // value={`${props.simulationData.wind[0]},${props.simulationData.wind[1]}`}
                 onChange={(e) =>
                     props.setSimulationData({
                         ...props.simulationData,
