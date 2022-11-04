@@ -6,7 +6,7 @@ import SettingsComponent from "../components/Settings/SettingsComponent";
 import { connectWebsocket } from "../utils/webSocket";
 import "./MainPage.css";
 
-type Settings = {
+export type Settings = {
     gridSize: number;
     pixelSize: number;
 };
@@ -30,22 +30,16 @@ const MainPage = () => {
     const [grid, setGrid] = useState<Array<number[]>>();
     const [gridSize, setGridSize] = useState<number>(30);
     const [pixelSize, setPixelSize] = useState<number>(500);
-    // const [connection, setConnection] = useState(false);
     const [settings, setSettings] = useState<Settings>({ gridSize, pixelSize });
     const [wind, setWind] = useState<Array<number>>();
-    const [simulationData, setSimulationData] = useState<SimulationData>();
+    const [simulationData, setSimulationData] = useState<SimulationData>({
+        grid_size: gridSize,
+        wind: [1, 3],
+        start_cell: [1, 1],
+        slow_simulation: true,
+        run_until: 10,
+    });
     const ws = useRef<WebSocket>();
-
-    //TODO the method that opens the websocket connection and runs a new sim needs to set prevGrids.current = []
-
-    // const onClickUpdate = () => {
-    //     if (settings.gridSize === 0 || settings.pixelSize === 0) {
-    //         alert("Please enter both fields");
-    //         return;
-    //     }
-    //     setGrid(null);
-    //     createRandomGrid();
-    // };
 
     const loadGrid = (index: number): void => {
         const prevGrid = prevGrids.current[index];
@@ -84,12 +78,9 @@ const MainPage = () => {
         setWind(data.wind);
     };
 
-    const onOpen = (event: Event): void => {
-        // setConnection(true);
-    };
+    const onOpen = (event: Event): void => {};
 
     const onError = (event: Event): void => {
-        // setConnection(false);
         createRandomGrid();
     };
 
@@ -103,7 +94,6 @@ const MainPage = () => {
     };
 
     const startSimulation = async () => {
-        console.log(simulationData);
         let res = await fetch("http://localhost:5000/run", {
             method: "POST",
             headers: {
@@ -120,60 +110,20 @@ const MainPage = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-            }
+            },
         });
         let data = await res.json();
         console.log(data);
-    }
+    };
 
     useEffect(() => {
-        // establishConnection();
-        let data: SimulationData = {
-            grid_size: 30,
-            wind: [1, 3],
-            start_cell: [1, 1],
-            slow_simulation: true,
-            run_until: 10,
-        };
-        setSimulationData(data);
-        createRandomGrid()
+        createRandomGrid();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <div style={{ height: "100vh", textAlign: "center" }}>
             <h1>Forest Fire Simulation</h1>
-            {/* {!connection && (
-                <div className="settings">
-                    <TextField
-                        variant="outlined"
-                        label="Pixel size of grid"
-                        type="number"
-                        value={settings.pixelSize.toString()}
-                        onChange={(e) =>
-                            setSettings({
-                                ...settings,
-                                pixelSize: Number(e.target.value),
-                            })
-                        }
-                    ></TextField>
-                    <TextField
-                        variant="outlined"
-                        label="No of rows"
-                        type="number"
-                        value={settings.gridSize.toString()}
-                        onChange={(e) =>
-                            setSettings({
-                                ...settings,
-                                gridSize: Number(e.target.value),
-                            })
-                        }
-                    ></TextField>
-                    <Button variant="contained" onClick={() => onClickUpdate()}>
-                        Update
-                    </Button>
-                </div>
-            )} */}
             <p style={{ fontSize: 20, margin: 0 }}>Wind direction</p>
             <Arrow wind={wind} />
             <div className="main-container">
@@ -191,8 +141,9 @@ const MainPage = () => {
                     startWebSocket={startWebSocket}
                     simulationData={simulationData}
                     setSimulationData={setSimulationData}
-                    setGridSize={setGridSize}
-                    setPixelSize={setPixelSize}
+                    settings={settings}
+                    setSettings={setSettings}
+                    createRandomGrid={createRandomGrid}
                 />
             </div>
 

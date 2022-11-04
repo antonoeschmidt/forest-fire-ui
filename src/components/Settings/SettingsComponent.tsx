@@ -1,6 +1,6 @@
-import { Button, TextField } from "@mui/material";
+import { Button, FormControlLabel, Switch, TextField } from "@mui/material";
 import React from "react";
-import { SimulationData } from "../../pages/MainPage";
+import { Settings, SimulationData } from "../../pages/MainPage";
 import "./SettingsComponent.css";
 
 type Props = {
@@ -9,8 +9,9 @@ type Props = {
     startWebSocket: () => void;
     simulationData: SimulationData;
     setSimulationData: React.Dispatch<React.SetStateAction<SimulationData>>;
-    setGridSize: React.Dispatch<React.SetStateAction<Number>>;
-    setPixelSize: React.Dispatch<React.SetStateAction<Number>>;
+    settings: Settings;
+    setSettings: React.Dispatch<React.SetStateAction<Settings>>;
+    createRandomGrid: () => void;
 };
 
 const SettingsComponent = (props: Props) => {
@@ -18,8 +19,8 @@ const SettingsComponent = (props: Props) => {
 
     const parseToIntArray = (str: string) => {
         let arr = str.split(".");
-        return [Number(arr[0]), Number(arr[1])] 
-    }
+        return [Number(arr[0]), Number(arr[1])];
+    };
 
     return (
         <div className="settings-new">
@@ -30,37 +31,45 @@ const SettingsComponent = (props: Props) => {
                 label="Pixel size of grid"
                 type="number"
                 onChange={(e) =>
-                    props.setPixelSize(Number(e.target.value))
+                    props.setSettings({
+                        ...props.settings,
+                        pixelSize: Number(e.target.value),
+                    })
                 }
+                value={props.settings.pixelSize}
+                InputLabelProps={{ shrink: true }}
             ></TextField>
             <TextField
                 sx={theme}
                 variant="outlined"
                 label="No of rows"
                 type="number"
-                // value={props.simulationData.grid_size.toString()}
-                onChange={(e) =>
-                    {
-                        props.setSimulationData({
+                value={props.settings.gridSize}
+                onChange={(e) => {
+                    props.setSimulationData({
                         ...props.simulationData,
                         grid_size: Number(e.target.value),
-                    })
-                    props.setGridSize(Number(e.target.value))
-                }
-                }
+                    });
+                    props.setSettings({
+                        ...props.settings,
+                        gridSize: Number(e.target.value),
+                    });
+                }}
+                InputLabelProps={{ shrink: true }}
             ></TextField>
             <TextField
                 sx={theme}
                 variant="outlined"
                 label="Ignite point"
                 type="number"
-                // value={props.simulationData.grid_size.toString()}
+                // value={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
                 onChange={(e) =>
                     props.setSimulationData({
                         ...props.simulationData,
-                      start_cell: parseToIntArray(e.target.value)
+                        start_cell: parseToIntArray(e.target.value),
                     })
                 }
+                InputLabelProps={{ shrink: true }}
             ></TextField>
             <TextField
                 sx={theme}
@@ -70,36 +79,39 @@ const SettingsComponent = (props: Props) => {
                 onChange={(e) =>
                     props.setSimulationData({
                         ...props.simulationData,
-                      wind: parseToIntArray(e.target.value)
+                        wind: parseToIntArray(e.target.value),
                     })
                 }
+                InputLabelProps={{ shrink: true }}
             ></TextField>
             <TextField
                 sx={theme}
                 variant="outlined"
                 label="Number of iterations"
                 type="number"
-                // value={props.simulationData.run_until.toString()}
+                value={props.simulationData.run_until.toString()}
                 onChange={(e) =>
                     props.setSimulationData({
                         ...props.simulationData,
-                        run_until: Number(e.target.value)
+                        run_until: Number(e.target.value),
                     })
                 }
+                InputLabelProps={{ shrink: true }}
             ></TextField>
-            <TextField
-                sx={theme}
-                variant="outlined"
+            <FormControlLabel
+                control={
+                    <Switch
+                        defaultChecked
+                        onChange={(e) =>
+                            props.setSimulationData({
+                                ...props.simulationData,
+                                slow_simulation: e.target.checked,
+                            })
+                        }
+                    />
+                }
                 label="Slow simulation"
-                type="string"
-                // value={props.simulationData.slow_simulation.toString()}
-                onChange={(e) =>
-                    props.setSimulationData({
-                        ...props.simulationData,
-                        slow_simulation: Boolean(e.target.value)
-                    })
-                }
-            ></TextField>
+            />
             <Button
                 sx={theme}
                 style={{ marginTop: "1em" }}
@@ -123,6 +135,14 @@ const SettingsComponent = (props: Props) => {
                 onClick={() => props.startSimulation()}
             >
                 Start simulation
+            </Button>
+            <Button
+                sx={theme}
+                style={{ marginTop: "1em" }}
+                variant="contained"
+                onClick={() => props.createRandomGrid()}
+            >
+                Test local grid
             </Button>
         </div>
     );
