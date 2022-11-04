@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Grid.css";
 
 type Props = {
@@ -18,8 +18,12 @@ const typesOfFields = {
 };
 
 const Grid = (props: Props) => {
-  let singleGridSize = props.pixelSize / props.gridSize;
+  const [singleGridSize, setSingleGridSize] = useState(0)
 
+  useEffect(() => {
+    setSingleGridSize(props.pixelSize / props.gridSize)
+  }, [props.gridSize, props.pixelSize])
+  
   return (
       <div
         className="grid"
