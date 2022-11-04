@@ -18,8 +18,12 @@ const SettingsComponent = (props: Props) => {
     const theme = { padding: "5px" };
 
     const parseToIntArray = (str: string) => {
-        let arr = str.split(".");
-        return [Number(arr[0]), Number(arr[1])];
+        let arr = str.split(",");
+        if (arr.length === 2) {
+            return [Number(arr[0]), Number(arr[1])];
+        } else {
+            return null
+        }
     };
 
     return (
@@ -61,13 +65,16 @@ const SettingsComponent = (props: Props) => {
                 sx={theme}
                 variant="outlined"
                 label="Ignite point"
-                type="number"
-                // value={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
-                onChange={(e) =>
-                    props.setSimulationData({
-                        ...props.simulationData,
-                        start_cell: parseToIntArray(e.target.value),
-                    })
+                type="text"
+                defaultValue={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
+                onChange={(e) => {
+                    if (parseToIntArray(e.target.value)) {
+                        props.setSimulationData({
+                            ...props.simulationData,
+                            start_cell: parseToIntArray(e.target.value),
+                        })
+                    }
+                }
                 }
                 InputLabelProps={{ shrink: true }}
             ></TextField>
@@ -75,13 +82,17 @@ const SettingsComponent = (props: Props) => {
                 sx={theme}
                 variant="outlined"
                 label="Wind"
-                type="number"
-                // value={`${props.simulationData.wind[0]},${props.simulationData.wind[1]}`}
+                type="text"
+                defaultValue={`${props.simulationData.wind[0]},${props.simulationData.wind[1]}`}
                 onChange={(e) =>
-                    props.setSimulationData({
-                        ...props.simulationData,
-                        wind: parseToIntArray(e.target.value),
-                    })
+                    {
+                        if (parseToIntArray(e.target.value)) {
+                            props.setSimulationData({
+                                ...props.simulationData,
+                                wind: parseToIntArray(e.target.value),
+                            })
+                        }
+                    }
                 }
                 InputLabelProps={{ shrink: true }}
             ></TextField>
