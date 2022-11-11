@@ -23,6 +23,7 @@ export type EventData = {
     grid_size: number;
     grid: Array<number[]>;
     wind: Array<number>;
+    drones: Array<number[]>;
 };
 
 const MainPage = () => {
@@ -37,8 +38,9 @@ const MainPage = () => {
         wind: [1, 3],
         start_cell: [1, 1],
         slow_simulation: true,
-        run_until: 10,
+        run_until: 25,
     });
+    const [drones, setDrones] = useState<Array<number>[]>([]);
     const ws = useRef<WebSocket>();
 
     const loadGrid = (index: number): void => {
@@ -60,6 +62,7 @@ const MainPage = () => {
             grid_size: settings.gridSize,
             grid: grid,
             wind: [0, 0],
+            drones: []
         });
         setGrid(grid);
         setGridSize(settings.gridSize);
@@ -68,14 +71,17 @@ const MainPage = () => {
 
     const onMessage = (event: MessageEvent): void => {
         let data = JSON.parse(event.data) as EventData;
+        console.log('data', data);
         prevGrids.current.push({
             grid_size: data.grid_size,
             grid: data.grid,
             wind: data.wind,
+            drones: data.drones
         });
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
+        setDrones(data.drones);
     };
 
     const onOpen = (event: Event): void => {};
@@ -130,6 +136,7 @@ const MainPage = () => {
                 <div className="filler" />
                 {grid && (
                     <Grid
+                        drones={drones}
                         grid={grid}
                         gridSize={gridSize}
                         pixelSize={pixelSize}
@@ -146,7 +153,7 @@ const MainPage = () => {
                     createRandomGrid={createRandomGrid}
                 />
             </div>
-
+ 
             <div className="settings">
                 <GridPicker
                     maxIndex={prevGrids.current.length - 2}
