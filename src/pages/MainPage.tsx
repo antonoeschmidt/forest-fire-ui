@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Arrow from "../components/Arrow/Arrow";
 import Grid from "../components/Grid/Grid";
 import GridPicker from "../components/GridPicker/GridPicker";
+import Plots from "../components/Plots/Plots";
 import SettingsComponent from "../components/Settings/SettingsComponent";
 import { connectWebsocket } from "../utils/webSocket";
 import "./MainPage.css";
@@ -23,6 +24,7 @@ export type EventData = {
     grid_size: number;
     grid: Array<number[]>;
     wind: Array<number>;
+    stats: { x: number[]; y: number[] };
 };
 
 const MainPage = () => {
@@ -39,7 +41,9 @@ const MainPage = () => {
         slow_simulation: true,
         run_until: 10,
     });
+    const [showSimulation, setShowSimulation] = useState(true);
     const ws = useRef<WebSocket>();
+    const [statData, setStatData] = useState<{ x: number[]; y: number[] }>();
 
     const loadGrid = (index: number): void => {
         const prevGrid = prevGrids.current[index];
@@ -60,6 +64,7 @@ const MainPage = () => {
             grid_size: settings.gridSize,
             grid: grid,
             wind: [0, 0],
+            stats: { x: [0], y: [0] },
         });
         setGrid(grid);
         setGridSize(settings.gridSize);
@@ -72,10 +77,12 @@ const MainPage = () => {
             grid_size: data.grid_size,
             grid: data.grid,
             wind: data.wind,
+            stats: data.stats,
         });
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
+        setStatData(data.stats);
     };
 
     const onOpen = (event: Event): void => {};
@@ -127,13 +134,25 @@ const MainPage = () => {
             <p style={{ fontSize: 20, margin: 0 }}>Wind direction</p>
             <Arrow wind={wind} />
             <div className="main-container">
-                <div className="filler" />
-                {grid && (
+                <div className="filler">
+                    <Plots x={statData?.x} y={statData?.y} />
+                </div>
+                {grid && showSimulation ? (
                     <Grid
                         grid={grid}
                         gridSize={gridSize}
                         pixelSize={pixelSize}
                     />
+                ) : (
+                    <div
+                        style={{
+                            width: pixelSize,
+                            height: pixelSize,
+                            background: "white",
+                            margin: "auto",
+                            padding: "3em",
+                        }}
+                    ></div>
                 )}
                 <SettingsComponent
                     establishConnection={establishConnection}
@@ -144,6 +163,8 @@ const MainPage = () => {
                     settings={settings}
                     setSettings={setSettings}
                     createRandomGrid={createRandomGrid}
+                    showSimulation={showSimulation}
+                    setShowSimulation={setShowSimulation}
                 />
             </div>
 
