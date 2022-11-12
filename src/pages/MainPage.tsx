@@ -24,6 +24,7 @@ export type EventData = {
     grid_size: number;
     grid: Array<number[]>;
     wind: Array<number>;
+    drones: Array<number[]>;
     stats: { x: number[]; y: number[] };
 };
 
@@ -39,8 +40,9 @@ const MainPage = () => {
         wind: [1, 3],
         start_cell: [1, 1],
         slow_simulation: true,
-        run_until: 10,
+        run_until: 25,
     });
+    const [drones, setDrones] = useState<Array<number>[]>([]);
     const [showSimulation, setShowSimulation] = useState(true);
     const ws = useRef<WebSocket>();
     const [statData, setStatData] = useState<{ x: number[]; y: number[] }>();
@@ -64,6 +66,7 @@ const MainPage = () => {
             grid_size: settings.gridSize,
             grid: grid,
             wind: [0, 0],
+            drones: [],
             stats: { x: [0], y: [0] },
         });
         setGrid(grid);
@@ -77,11 +80,13 @@ const MainPage = () => {
             grid_size: data.grid_size,
             grid: data.grid,
             wind: data.wind,
+            drones: data.drones,
             stats: data.stats,
         });
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
+        setDrones(data.drones);
         setStatData(data.stats);
     };
 
@@ -139,6 +144,7 @@ const MainPage = () => {
                 </div>
                 {grid && showSimulation ? (
                     <Grid
+                        drones={drones}
                         grid={grid}
                         gridSize={gridSize}
                         pixelSize={pixelSize}
@@ -167,7 +173,7 @@ const MainPage = () => {
                     setShowSimulation={setShowSimulation}
                 />
             </div>
-
+ 
             <div className="settings">
                 <GridPicker
                     maxIndex={prevGrids.current.length - 2}
