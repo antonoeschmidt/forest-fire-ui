@@ -12,6 +12,8 @@ type Props = {
     settings: Settings;
     setSettings: React.Dispatch<React.SetStateAction<Settings>>;
     createRandomGrid: () => void;
+    showSimulation: boolean;
+    setShowSimulation: React.Dispatch<React.SetStateAction<Boolean>>;
 };
 
 const SettingsComponent = (props: Props) => {
@@ -137,6 +139,17 @@ const SettingsComponent = (props: Props) => {
                     />
                 }
                 label="Slow simulation"
+            />
+            <FormControlLabel
+                control={
+                    <Switch
+                        defaultChecked
+                        onChange={(e) =>
+                            props.setShowSimulation(e.target.checked)
+                        }
+                    />
+                }
+                label="Show simulation"
             />
             <Button
                 sx={theme}

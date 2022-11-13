@@ -5,6 +5,7 @@ type Props = {
   grid?: Array<Number[]>;
   gridSize: number;
   pixelSize: number;
+  drones: Array<number>[];
 };
 
 const typesOfFields = {
@@ -21,8 +22,13 @@ const Grid = (props: Props) => {
   const [singleGridSize, setSingleGridSize] = useState(0)
 
   useEffect(() => {
-    setSingleGridSize(props.pixelSize / props.gridSize)
-  }, [props.gridSize, props.pixelSize])
+    setSingleGridSize(props.pixelSize / props.gridSize);
+     
+  }, [props.gridSize, props.pixelSize]);
+
+  const dronesOnCell = (x,y) => {
+    return props.drones.filter(drone => x === Math.round(drone[0]) && y === Math.round(drone[1])).length;
+  }
   
   return (
       <div
@@ -38,7 +44,9 @@ const Grid = (props: Props) => {
                 width: `${singleGridSize}px`,
                 height: `${singleGridSize}px`,
               }}
-            />
+            >
+              {dronesOnCell(rowIndex, cellIndex) > 0 && dronesOnCell(rowIndex, cellIndex)}
+            </div>
           ))
         )}
       </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Arrow from "../components/Arrow/Arrow";
 import Grid from "../components/Grid/Grid";
 import GridPicker from "../components/GridPicker/GridPicker";
+import Plots from "../components/Plots/Plots";
 import SettingsComponent from "../components/Settings/SettingsComponent";
 import { connectWebsocket } from "../utils/webSocket";
 import "./MainPage.css";
@@ -25,6 +26,8 @@ export type EventData = {
     grid_size: number;
     grid: Array<number[]>;
     wind: Array<number>;
+    drones: Array<number[]>;
+    stats: { x: number[]; y: number[] };
 };
 
 const MainPage = () => {
@@ -40,10 +43,13 @@ const MainPage = () => {
         wind: [1, 3],
         start_cell: [1, 1],
         slow_simulation: true,
-        run_until: 10,
         seed: 1,
+        run_until: 25,
     });
+    const [drones, setDrones] = useState<Array<number>[]>([]);
+    const [showSimulation, setShowSimulation] = useState(true);
     const ws = useRef<WebSocket>();
+    const [statData, setStatData] = useState<{ x: number[]; y: number[] }>();
 
     const loadGrid = (index: number): void => {
         const prevGrid = prevGrids.current[index];
@@ -64,6 +70,8 @@ const MainPage = () => {
             grid_size: settings.gridSize,
             grid: grid,
             wind: [0, 0],
+            drones: [],
+            stats: { x: [0], y: [0] },
         });
         setGrid(grid);
         setGridSize(settings.gridSize);
@@ -76,10 +84,14 @@ const MainPage = () => {
             grid_size: data.grid_size,
             grid: data.grid,
             wind: data.wind,
+            drones: data.drones,
+            stats: data.stats,
         });
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
+        setDrones(data.drones);
+        setStatData(data.stats);
     };
 
     const onOpen = (event: Event): void => {};
@@ -132,13 +144,26 @@ const MainPage = () => {
             <p style={{ fontSize: 20, margin: 0 }}>Wind direction</p>
             <Arrow wind={wind} />
             <div className="main-container">
-                <div className="filler" />
-                {grid && (
+                <div className="filler">
+                    <Plots x={statData?.x} y={statData?.y} />
+                </div>
+                {grid && showSimulation ? (
                     <Grid
+                        drones={drones}
                         grid={grid}
                         gridSize={gridSize}
                         pixelSize={pixelSize}
                     />
+                ) : (
+                    <div
+                        style={{
+                            width: pixelSize,
+                            height: pixelSize,
+                            background: "white",
+                            margin: "auto",
+                            padding: "3em",
+                        }}
+                    ></div>
                 )}
                 <SettingsComponent
                     establishConnection={establishConnection}
@@ -149,9 +174,11 @@ const MainPage = () => {
                     settings={settings}
                     setSettings={setSettings}
                     createRandomGrid={createRandomGrid}
+                    showSimulation={showSimulation}
+                    setShowSimulation={setShowSimulation}
                 />
             </div>
-
+ 
             <div className="settings">
                 <GridPicker
                     maxIndex={prevGrids.current.length - 2}
