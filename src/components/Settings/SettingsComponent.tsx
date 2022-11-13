@@ -110,6 +110,20 @@ const SettingsComponent = (props: Props) => {
                 }
                 InputLabelProps={{ shrink: true }}
             ></TextField>
+              <TextField
+                sx={theme}
+                variant="outlined"
+                label="Seed"
+                type="number"
+                value={props.simulationData.seed.toString()}
+                onChange={(e) =>
+                    props.setSimulationData({
+                        ...props.simulationData,
+                        seed: Number(e.target.value),
+                    })
+                }
+                InputLabelProps={{ shrink: true }}
+            />
             <FormControlLabel
                 control={
                     <Switch

@@ -9,6 +9,7 @@ import "./MainPage.css";
 export type Settings = {
     gridSize: number;
     pixelSize: number;
+    seed: number;
 };
 
 export type SimulationData = {
@@ -17,6 +18,7 @@ export type SimulationData = {
     start_cell: Array<number>;
     slow_simulation: boolean;
     run_until: number;
+    seed: number;
 };
 
 export type EventData = {
@@ -30,7 +32,8 @@ const MainPage = () => {
     const [grid, setGrid] = useState<Array<number[]>>();
     const [gridSize, setGridSize] = useState<number>(30);
     const [pixelSize, setPixelSize] = useState<number>(500);
-    const [settings, setSettings] = useState<Settings>({ gridSize, pixelSize });
+    const [seed, setSeed] = useState<number>(1);
+    const [settings, setSettings] = useState<Settings>({ gridSize, pixelSize, seed });
     const [wind, setWind] = useState<Array<number>>();
     const [simulationData, setSimulationData] = useState<SimulationData>({
         grid_size: gridSize,
@@ -38,6 +41,7 @@ const MainPage = () => {
         start_cell: [1, 1],
         slow_simulation: true,
         run_until: 10,
+        seed: 1,
     });
     const ws = useRef<WebSocket>();
 
@@ -103,6 +107,7 @@ const MainPage = () => {
         });
         let data = await res.json();
         console.log(data);
+        prevGrids.current = []
     };
 
     const startWebSocket = async () => {
