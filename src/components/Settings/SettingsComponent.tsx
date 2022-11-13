@@ -12,6 +12,7 @@ type Props = {
     settings: Settings;
     setSettings: React.Dispatch<React.SetStateAction<Settings>>;
     createRandomGrid: () => void;
+    grid: () => void;
     showSimulation: boolean;
     setShowSimulation: React.Dispatch<React.SetStateAction<Boolean>>;
 };
@@ -61,23 +62,6 @@ const SettingsComponent = (props: Props) => {
                         gridSize: Number(e.target.value),
                     });
                 }}
-                InputLabelProps={{ shrink: true }}
-            ></TextField>
-            <TextField
-                sx={theme}
-                variant="outlined"
-                label="Ignite point"
-                type="text"
-                defaultValue={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
-                onChange={(e) => {
-                    if (parseToIntArray(e.target.value)) {
-                        props.setSimulationData({
-                            ...props.simulationData,
-                            start_cell: parseToIntArray(e.target.value),
-                        })
-                    }
-                }
-                }
                 InputLabelProps={{ shrink: true }}
             ></TextField>
             <TextField
@@ -166,6 +150,14 @@ const SettingsComponent = (props: Props) => {
                 onClick={() => props.establishConnection()}
             >
                 Establish new connection
+            </Button>
+            <Button
+                sx={theme}
+                style={{ marginTop: "1em" }}
+                variant="contained"
+                onClick={() => props.grid()}
+            >
+                Renew grid
             </Button>
             <Button
                 sx={theme}
