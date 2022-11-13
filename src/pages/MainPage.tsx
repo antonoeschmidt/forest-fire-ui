@@ -151,6 +151,7 @@ const MainPage = () => {
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
+        setIgnitionMap([])
     }
 
     const startSimulation = async () => {
