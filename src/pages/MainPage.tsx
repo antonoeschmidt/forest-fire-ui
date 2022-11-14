@@ -16,7 +16,7 @@ export type Settings = {
 export type SimulationData = {
     grid_size: number;
     wind: Array<number>;
-    start_cell: Array<number>;
+    start_cell: Array<Array<number>>;
     slow_simulation: boolean;
     run_until: number;
     seed: number;
@@ -33,15 +33,16 @@ export type EventData = {
 const MainPage = () => {
     const prevGrids = useRef<EventData[]>([]);
     const [grid, setGrid] = useState<Array<number[]>>();
-    const [gridSize, setGridSize] = useState<number>(30);
+    const [gridSize, setGridSize] = useState<number>(15);
     const [pixelSize, setPixelSize] = useState<number>(500);
     const [seed, setSeed] = useState<number>(1);
     const [settings, setSettings] = useState<Settings>({ gridSize, pixelSize, seed });
     const [wind, setWind] = useState<Array<number>>();
+    const [ignitionMap, setIgnitionMap] = useState<[number, number][]>([]);
     const [simulationData, setSimulationData] = useState<SimulationData>({
         grid_size: gridSize,
         wind: [1, 3],
-        start_cell: [1, 1],
+        start_cell: [],
         slow_simulation: true,
         seed: 1,
         run_until: 25,
@@ -58,12 +59,33 @@ const MainPage = () => {
         setSettings((prev) => ({ ...prev, gridSize: prevGrid.grid_size }));
     };
 
+    const igniteCallback = (x: number, y: number) => {
+        if (grid[x][y] === 6) {
+
+        } else if (grid[x][y] === 2) {
+            setIgnitionMap(arr => arr.filter(elem => elem[0] !== x && elem[1] !== y))
+            grid[x][y] = prevGrids.current.at(-2)['grid'][x][y]
+        } else {
+            setIgnitionMap(arr => [[x, y], ...arr])
+            grid[x][y] = 2
+        }
+
+        setGrid(grid)
+
+    }
+
+    useEffect(() => {
+        setSeed(1)
+        setSimulationData({ ...simulationData, start_cell: ignitionMap })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ignitionMap])
+
     const createRandomGrid = () => {
         let grid = [];
         for (let i = 0; i < settings.gridSize; i++) {
             grid.push(Array(settings.gridSize));
             for (let j = 0; j < settings.gridSize; j++) {
-                grid[i][j] = Math.round(Math.random() * 2) + 1;
+                grid[i][j] = 1;
             }
         }
         prevGrids.current.push({
@@ -94,7 +116,7 @@ const MainPage = () => {
         setStatData(data.stats);
     };
 
-    const onOpen = (event: Event): void => {};
+    const onOpen = (event: Event): void => { };
 
     const onError = (event: Event): void => {
         createRandomGrid();
@@ -107,9 +129,34 @@ const MainPage = () => {
             onOpen,
             onError
         );
+        getGrid();
+        getGrid();
     };
 
+    const getGrid = async () => {
+        let res = await fetch("http://localhost:5000/grid", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(simulationData),
+        });
+        let data = await res.json();
+        prevGrids.current.push({
+            grid_size: settings.gridSize,
+            grid: data.grid,
+            wind: [0, 0],
+            drones: [],
+            stats: { x: [0], y: [0] },
+        });
+        setGridSize(data.grid_size);
+        setGrid(data.grid);
+        setWind(data.wind);
+        setIgnitionMap([])
+    }
+
     const startSimulation = async () => {
+        console.log('Data', [simulationData])
         let res = await fetch("http://localhost:5000/run", {
             method: "POST",
             headers: {
@@ -149,6 +196,7 @@ const MainPage = () => {
                 </div>
                 {grid && showSimulation ? (
                     <Grid
+                        igniteCallback={igniteCallback}
                         drones={drones}
                         grid={grid}
                         gridSize={gridSize}
@@ -176,9 +224,10 @@ const MainPage = () => {
                     createRandomGrid={createRandomGrid}
                     showSimulation={showSimulation}
                     setShowSimulation={setShowSimulation}
+                    grid={() => { getGrid(); getGrid() }} // Then removing work ;)
                 />
             </div>
- 
+
             <div className="settings">
                 <GridPicker
                     maxIndex={prevGrids.current.length - 2}
