@@ -75,6 +75,7 @@ const MainPage = () => {
     }
 
     useEffect(() => {
+        setSeed(1)
         setSimulationData({ ...simulationData, start_cell: ignitionMap })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ignitionMap])
