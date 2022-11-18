@@ -6,6 +6,7 @@ type Props = {
   gridSize: number;
   pixelSize: number;
   drones: Array<number>[];
+  igniteCallback: (x: number, y: number) => void
 };
 
 const typesOfFields = {
@@ -29,6 +30,8 @@ const Grid = (props: Props) => {
   const dronesOnCell = (x,y) => {
     return props.drones.filter(drone => x === Math.round(drone[0]) && y === Math.round(drone[1])).length;
   }
+
+  const { igniteCallback } = props;
   
   return (
       <div
@@ -38,6 +41,7 @@ const Grid = (props: Props) => {
         {props.grid.map((row, rowIndex) =>
           row.map((cell, cellIndex) => (
             <div
+              onClick={() => { igniteCallback(rowIndex, cellIndex) }}
               key={`${rowIndex},${cellIndex}`}
               className={typesOfFields[`${cell}`]}
               style={{

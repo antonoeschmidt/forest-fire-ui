@@ -12,6 +12,9 @@ type Props = {
     settings: Settings;
     setSettings: React.Dispatch<React.SetStateAction<Settings>>;
     createRandomGrid: () => void;
+    grid: () => void;
+    showSimulation: boolean;
+    setShowSimulation: React.Dispatch<React.SetStateAction<Boolean>>;
 };
 
 const SettingsComponent = (props: Props) => {
@@ -43,7 +46,7 @@ const SettingsComponent = (props: Props) => {
                 value={props.settings.pixelSize}
                 InputLabelProps={{ shrink: true }}
             ></TextField>
-            <TextField
+            {/* <TextField
                 sx={theme}
                 variant="outlined"
                 label="No of rows"
@@ -60,25 +63,8 @@ const SettingsComponent = (props: Props) => {
                     });
                 }}
                 InputLabelProps={{ shrink: true }}
-            ></TextField>
-            <TextField
-                sx={theme}
-                variant="outlined"
-                label="Ignite point"
-                type="text"
-                defaultValue={`${props.simulationData.start_cell[0]},${props.simulationData.start_cell[1]}`}
-                onChange={(e) => {
-                    if (parseToIntArray(e.target.value)) {
-                        props.setSimulationData({
-                            ...props.simulationData,
-                            start_cell: parseToIntArray(e.target.value),
-                        })
-                    }
-                }
-                }
-                InputLabelProps={{ shrink: true }}
-            ></TextField>
-            <TextField
+            ></TextField> */}
+            {/* <TextField
                 sx={theme}
                 variant="outlined"
                 label="Wind"
@@ -95,8 +81,8 @@ const SettingsComponent = (props: Props) => {
                     }
                 }
                 InputLabelProps={{ shrink: true }}
-            ></TextField>
-            <TextField
+            ></TextField> */}
+            {/* <TextField
                 sx={theme}
                 variant="outlined"
                 label="Number of iterations"
@@ -110,7 +96,21 @@ const SettingsComponent = (props: Props) => {
                 }
                 InputLabelProps={{ shrink: true }}
             ></TextField>
-            <FormControlLabel
+              <TextField
+                sx={theme}
+                variant="outlined"
+                label="Seed"
+                type="number"
+                value={props.simulationData.seed.toString()}
+                onChange={(e) =>
+                    props.setSimulationData({
+                        ...props.simulationData,
+                        seed: Number(e.target.value),
+                    })
+                }
+                InputLabelProps={{ shrink: true }}
+            /> */}
+            {/* <FormControlLabel
                 control={
                     <Switch
                         defaultChecked
@@ -123,6 +123,17 @@ const SettingsComponent = (props: Props) => {
                     />
                 }
                 label="Slow simulation"
+            /> */}
+            <FormControlLabel
+                control={
+                    <Switch
+                        defaultChecked
+                        onChange={(e) =>
+                            props.setShowSimulation(e.target.checked)
+                        }
+                    />
+                }
+                label="Show simulation"
             />
             <Button
                 sx={theme}
@@ -139,6 +150,14 @@ const SettingsComponent = (props: Props) => {
                 onClick={() => props.establishConnection()}
             >
                 Establish new connection
+            </Button>
+            <Button
+                sx={theme}
+                style={{ marginTop: "1em" }}
+                variant="contained"
+                onClick={() => props.grid()}
+            >
+                Renew grid
             </Button>
             <Button
                 sx={theme}
