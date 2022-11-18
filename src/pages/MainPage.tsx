@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Arrow from "../components/Arrow/Arrow";
 import Grid from "../components/Grid/Grid";
 import GridPicker from "../components/GridPicker/GridPicker";
+import { JsonEditor } from "../components/JsonEditor/JsonEditor";
 import SettingsComponent from "../components/Settings/SettingsComponent";
 import { connectWebsocket } from "../utils/webSocket";
 import "./MainPage.css";
@@ -18,6 +19,11 @@ export type SimulationData = {
     slow_simulation: boolean;
     run_until: number;
 };
+
+export type Cell = {
+    vegetation: number;
+    nOfDrones: number;
+}
 
 export type EventData = {
     grid_size: number;
@@ -72,12 +78,14 @@ const MainPage = () => {
     const onMessage = (event: MessageEvent): void => {
         let data = JSON.parse(event.data) as EventData;
         console.log('data', data);
+
         prevGrids.current.push({
             grid_size: data.grid_size,
             grid: data.grid,
             wind: data.wind,
             drones: data.drones
         });
+        
         setGridSize(data.grid_size);
         setGrid(data.grid);
         setWind(data.wind);
@@ -142,7 +150,7 @@ const MainPage = () => {
                         pixelSize={pixelSize}
                     />
                 )}
-                <SettingsComponent
+                {/* <SettingsComponent
                     establishConnection={establishConnection}
                     startSimulation={startSimulation}
                     startWebSocket={startWebSocket}
@@ -151,7 +159,8 @@ const MainPage = () => {
                     settings={settings}
                     setSettings={setSettings}
                     createRandomGrid={createRandomGrid}
-                />
+                /> */}
+                <JsonEditor />
             </div>
  
             <div className="settings">

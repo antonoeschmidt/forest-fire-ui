@@ -1,0 +1,8 @@
+{
+    "grid_size": 50,
+    "wind": [1,2],
+    "number_of_drones": 5,
+    "base_station_location": [1,1],
+    "iterations": 1000,
+    "slow_simulation": false
+}
