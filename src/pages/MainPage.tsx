@@ -22,7 +22,12 @@ export type SimulationData = {
   seed: number;
   slow_simulation: boolean;
   number_of_drones: number;
-  base_station_location: number[];
+  drone_base_location: {x: Number, y: number};
+  veg_low_burn_time: number;
+  veg_medium_burn_time: number;
+  veg_high_burn_time: number;
+  spread_after: number;
+  drone_speed: number;
 };
 
 export type Cell = {
@@ -46,14 +51,20 @@ const MainPage = () => {
     (JSON.parse(localStorage.getItem("settings")) as unknown as SimulationData);
 
   const baseSimData = {
-    grid_size: 15,
+    grid_size: 50,
     wind: [1, 3],
     start_cell: [],
     slow_simulation: true,
     seed: 1,
     run_until: 25,
     number_of_drones: 20,
-    base_station_location: [1, 1],
+    drone_base_location: {x: 2, y: 2},
+    veg_low_burn_time: 10,
+    veg_medium_burn_time: 15,
+    veg_high_burn_time: 20,
+    spread_after: 5,
+    ignition_points: [[1,1], [40,40]],
+    drone_speed: 4
   };
 
   const myGridSize = loadedSettings ? loadedSettings.grid_size : 15;

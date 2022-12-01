@@ -27,8 +27,8 @@ const Grid = (props: Props) => {
      
   }, [props.gridSize, props.pixelSize]);
 
-  const dronesOnCell = (x,y) => {
-    return props.drones.filter(drone => x === Math.round(drone[0]) && y === Math.round(drone[1])).length;
+  const cellHasDrone = (x,y) => {
+    return props.drones.filter(drone => x === Math.round(drone[0]) && y === Math.round(drone[1])).length > 0;
   }
 
   const { igniteCallback } = props;
@@ -43,13 +43,12 @@ const Grid = (props: Props) => {
             <div
               onClick={() => { igniteCallback(rowIndex, cellIndex) }}
               key={`${rowIndex},${cellIndex}`}
-              className={typesOfFields[`${cell}`]}
+              className={cellHasDrone(rowIndex, cellIndex) ? "grid-item-drone" : typesOfFields[`${cell}`]}
               style={{
                 width: `${singleGridSize}px`,
                 height: `${singleGridSize}px`,
               }}
             >
-              {dronesOnCell(rowIndex, cellIndex) > 0 && dronesOnCell(rowIndex, cellIndex)}
             </div>
           ))
         )}

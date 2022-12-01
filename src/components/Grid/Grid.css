@@ -40,6 +40,10 @@
     background: rgb(49, 53, 49);
 }
 
+.grid-item-drone {
+    background: rgb(0, 0, 0);
+}
+
 .settings {
     display: flex;
     flex-direction: row;
