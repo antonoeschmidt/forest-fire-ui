@@ -56,14 +56,14 @@ const MainPage = () => {
     start_cell: [],
     slow_simulation: true,
     seed: 1,
-    run_until: 25,
+    run_until: 500,
     number_of_drones: 20,
     drone_base_location: {x: 2, y: 2},
     veg_low_burn_time: 10,
     veg_medium_burn_time: 15,
     veg_high_burn_time: 20,
-    spread_after: 5,
-    ignition_points: [[1,1], [40,40]],
+    spread_after: 2,
+    ignition_points: [[40,20], [20,40], [40,40]],
     drone_speed: 4
   };
 
@@ -157,9 +157,9 @@ const MainPage = () => {
     setStatData(data.stats);
   };
 
-  const onOpen = (event: Event): void => {};
+  const onOpen = (): void => {};
 
-  const onError = (event: Event): void => {
+  const onError = (): void => {
     createRandomGrid();
   };
 
